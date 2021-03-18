@@ -15,17 +15,18 @@ Swing                      |  JavaFX
 ![lecturePresenter Screenshot](doc/readme/stylus-swing.png)  |  ![lectureEditor Screenshot](doc/readme/stylus-javafx.png)
 
 ### Supported Platforms
-Maven Central artifacts contain native libraries that can be loaded on the following platforms:
+By default, the main artifact depends on the native library corresponding to the system you are running your build or application on.
+The native libraries can be loaded on the following platforms:
 
-| Operating System | Artifact ID                |
-| ---------------- |----------------------------|
-| Linux            | stylus-linux-x86_64        |
-| macOS            | stylus-macos-x86_64        |
-| Windows          | stylus-windows-x86_64      |
+| Operating System | Classifier          |
+| ---------------- |---------------------|
+| Linux            | linux-x86_64        |
+| macOS            | macos-x86_64        |
+| Windows          | windows-x86_64      |
 
 ### Build Notes
 
-In order to build the native code, be sure to install the prerequisite software:
+In order to build the native code, be sure to install the prerequisite software and libraries:
 
 <table>
   <tr>
