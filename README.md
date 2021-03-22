@@ -48,3 +48,12 @@ Assuming you have all the prerequisites installed for your OS, run:
 ```
 mvn install
 ```
+
+#### Troubleshooting
+
+##### On Linux
+If you get the error `/usr/bin/ld: cannot find -ljawt` while linking, perform following steps:
+1. Find the path where JDK is installed: `which java` or `whereis java`.
+   Exemplary output: `/usr/lib/jvm/java-16/bin/java`
+2. Create a symbolic link to libjawt.so: `ln -s /usr/lib/jvm/java-16/lib/libjawt.so /usr/lib/` (according to the exemplary output above).
+3. Build the project again.
