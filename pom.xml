@@ -4,7 +4,7 @@
 
 	<groupId>org.lecturestudio.stylus</groupId>
 	<artifactId>stylus-parent</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>pom</packaging>
 
 	<name>stylus-parent</name>
@@ -38,7 +38,8 @@
 		<connection>scm:git:git://github.com/lecturestudio/stylus.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/lecturestudio/stylus.git</developerConnection>
 		<url>https://github.com/lecturestudio/stylus/tree/master</url>
-	</scm>
+	  <tag>v0.1.0</tag>
+  </scm>
 
 	<distributionManagement>
 		<snapshotRepository>
