@@ -15,6 +15,7 @@
  */
 
 #include "StylusUtils.h"
+#include <string>
 
 #include <jawt.h>
 #include <jawt_md.h>
@@ -29,25 +30,38 @@
 
 long GetJavaWindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window)
 {
-	jlong windowId = GetJavaFx9WindowId(env, window);
+    jclass javaClass = env->GetObjectClass(window);
+    jclass javaClassClass = env->FindClass("java/lang/Class");
+    jmethodID javaClassNameMethod = env->GetMethodID(javaClassClass, "getName", "()Ljava/lang/String;");
 
-	if (windowId == 0) {
-		try {
-			windowId = GetJavaAwtWindowId(env, window);
-		}
-		catch (...) {
-			// throw stylus::Exception("Get AWT window handle failed.");
-			
-			windowId = reinterpret_cast<jlong>(window.get());
-		}
-	}
+    jstring javaClassNameJString = (jstring)env->CallObjectMethod(javaClass, javaClassNameMethod);
+    const char * javaClassNameC = env->GetStringUTFChars(javaClassNameJString, 0);
+    //printf("%s\n", javaClassNameC); //for adding new cases
 
-	if (windowId == 0) {
-		// Search by window title.
+    jlong windowId;
+    std::string javaClassName(javaClassNameC);
 
-	}
+    if (javaClassName.compare("androidx.compose.desktop.AppWindow") == 0) {
+        windowId = GetComposeWindowId(env, window);
+    }
 
-	return static_cast<long>(windowId);
+    if (javaClassName.compare("javafx.stage.Stage") == 0) {
+        windowId = GetJavaFx9WindowId(env, window);
+    }
+
+    if (javaClassName.compare("javax.swing.JFrame") == 0) {
+        windowId = GetJavaAwtWindowId(env, window);
+    }
+
+    if (javaClassName.compare("java.lang.Long") == 0) {
+        jclass cls = env->FindClass("java/lang/Long");
+        jmethodID longGetLongValue= env->GetMethodID(cls,"longValue","()J");
+        windowId = (env)->CallLongMethod(window, longGetLongValue);
+    }
+
+    env->ReleaseStringUTFChars(javaClassNameJString, javaClassNameC);
+
+    return static_cast<long>(windowId);
 }
 
 long GetJavaAwtWindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window)
@@ -131,6 +145,36 @@ long GetJavaFx9WindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window)
 	}
 
 	jlong windowId = env->CallLongMethod(tkStage, method);
+
+	return static_cast<long>(windowId);
+}
+
+long GetComposeWindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window)
+{
+	jclass cls = env->GetObjectClass(window);
+	jmethodID method = env->GetMethodID(cls, "getWindow", "()Landroidx/compose/desktop/ComposeWindow;");
+
+	if (method == nullptr) {
+		// Window.getWindow() not found.
+		return 0;
+	}
+
+	jobject composeWindow = env->CallObjectMethod(window, method);
+
+	if (composeWindow == nullptr) {
+		// NullPointer composeWindow.
+		return 0;
+	}
+
+	cls = env->GetObjectClass(composeWindow);
+	method = env->GetMethodID(cls, "getWindowHandle", "()J");
+
+	if (method == nullptr) {
+		// composeWindow.getWindowHandle() not found.
+		return 0;
+	}
+
+	jlong windowId = env->CallLongMethod(composeWindow, method);
 
 	return static_cast<long>(windowId);
 }
