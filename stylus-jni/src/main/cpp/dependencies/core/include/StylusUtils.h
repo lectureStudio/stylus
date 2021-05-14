@@ -24,5 +24,6 @@
 long GetJavaWindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window);
 long GetJavaAwtWindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window);
 long GetJavaFx9WindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window);
+long GetComposeWindowId(JNIEnv * env, const jni::JavaLocalRef<jobject> & window);
 
 #endif
