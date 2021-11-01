@@ -231,6 +231,8 @@ public class AwtStylusManager {
 		SwingUtilities.invokeLater(() -> {
 			StylusManager manager = StylusManager.getInstance();
 			manager.attachStylusListener(componentState.stylusListener, SwingUtilities.getWindowAncestor(component));
+
+			updateComponentLocation(component);
 		});
 	}
 
