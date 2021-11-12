@@ -52,7 +52,12 @@ namespace stylus
 		WizardPenTablet,
 
 		Mouse,
-		TouchPad
+		TouchPad,
+
+		XWayland,
+		XWaylandStylus,
+		XWaylandEraser,
+		XWaylandPuck
 	};
 
 	static std::map<XAtom, std::string> atomKeyMap = {
@@ -66,7 +71,11 @@ namespace stylus
 		{ XAtom::TabletTouch,		"TOUCH" },
 		{ XAtom::InputTablet,		"TABLET" },
 		{ XAtom::AiptekStylus,		"Stylus" },
-		{ XAtom::WizardPenTablet,	"WizardPen Tablet" }
+		{ XAtom::WizardPenTablet,	"WizardPen Tablet" },
+		{ XAtom::XWayland,			"xwayland-pointer" },
+		{ XAtom::XWaylandStylus,	"xwayland-tablet stylus" },
+		{ XAtom::XWaylandEraser,	"xwayland-tablet eraser" },
+		{ XAtom::XWaylandPuck,		"xwayland-tablet cursor" }
 	};
 
 	static std::map<Atom, XAtom> atomMap;
@@ -199,10 +208,10 @@ namespace stylus
 		PX11InputDevice device = nullptr;
 		XAtom xAtom = it->second;
 
-		if (xAtom == XAtom::Mouse || xAtom == XAtom::TouchPad) {
+		if (xAtom == XAtom::Mouse || xAtom == XAtom::TouchPad || xAtom == XAtom::XWayland) {
 			device = std::make_shared<X11MouseDevice>(display, deviceInfo, Cursor::MOUSE);
 		}
-		else if (xAtom == XAtom::TabletEraser || xAtom == XAtom::WacomEraser) {
+		else if (xAtom == XAtom::TabletEraser || xAtom == XAtom::WacomEraser || xAtom == XAtom::XWaylandEraser) {
 			device = std::make_shared<X11TabletDevice>(display, deviceInfo, Cursor::ERASER);
 		}
 		else {

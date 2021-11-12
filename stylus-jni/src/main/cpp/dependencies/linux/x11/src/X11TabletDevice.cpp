@@ -17,6 +17,8 @@
 #include "X11TabletDevice.h"
 #include "X11Utils.h"
 
+#include <math.h>
+
 namespace stylus
 {
 	XAtoms & XAtoms::instance()
@@ -91,13 +93,19 @@ namespace stylus
 		EventType type = EventType::MOVE;
 		unsigned axesCount = motionEvent->axes_count;
 		PStylusEvent stylusEvent = createStylusEvent(type, motionEvent->axis_data, axesCount);
+		StylusAxesData & axesData = stylusEvent->axesData;
+
+		/*
+		 * Observed on Linux with Wayland.
+		 */
+		if (button != Button::NONE && isinf(axesData[Axis::PRESSURE])) {
+			axesData[Axis::PRESSURE] = 1;
+		}
 
 		/*
 		 * For some reason the motion event with pressure > 0 is fired
 		 * before the button-press event.
 		 */
-		const StylusAxesData & axesData = stylusEvent->axesData;
-
 		if (axesData[Axis::PRESSURE] > 0 && button == Button::NONE) {
 			return nullptr;
 		}
@@ -140,6 +148,19 @@ namespace stylus
 		if (released) {
 			// Reset button state.
 			button = Button::NONE;
+		}
+
+		if (axesCount == 0) {
+			// Compatibility mode.
+			int windowX = 0;
+			int windowY = 0;
+
+			X11Utils::getWindowLocation(display, window, &windowX, &windowY);
+
+			StylusAxesData & axesData = stylusEvent->axesData;
+			axesData[Axis::X] = buttonEvent->x;
+			axesData[Axis::Y] = buttonEvent->y;
+			axesData[Axis::PRESSURE] = 1;
 		}
 
 		return stylusEvent;
@@ -340,18 +361,20 @@ namespace stylus
 
 	PStylusEvent X11TabletDevice::createStylusEvent(EventType type, const int * devAxes, const unsigned & axesCount)
 	{
-		int windowX = 0;
-		int windowY = 0;
-
-		X11Utils::getWindowLocation(display, window, &windowX, &windowY);
-
 		StylusAxesData axesData;
 
-		setAxisValue(axesData, Axis::X, screenWidth, windowX, devAxes, axesCount);
-		setAxisValue(axesData, Axis::Y, screenHeight, windowY, devAxes, axesCount);
-		setAxisValue(axesData, Axis::PRESSURE, 1, 0, devAxes, axesCount);
-		setAxisValue(axesData, Axis::TILT_X, 1, 0, devAxes, axesCount);
-		setAxisValue(axesData, Axis::TILT_Y, 1, 0, devAxes, axesCount);
+		if (axesCount > 0) {
+			int windowX = 0;
+			int windowY = 0;
+
+			X11Utils::getWindowLocation(display, window, &windowX, &windowY);
+
+			setAxisValue(axesData, Axis::X, screenWidth, windowX, devAxes, axesCount);
+			setAxisValue(axesData, Axis::Y, screenHeight, windowY, devAxes, axesCount);
+			setAxisValue(axesData, Axis::PRESSURE, 1, 0, devAxes, axesCount);
+			setAxisValue(axesData, Axis::TILT_X, 1, 0, devAxes, axesCount);
+			setAxisValue(axesData, Axis::TILT_Y, 1, 0, devAxes, axesCount);
+		}
 
 		return std::make_shared<StylusEvent>(type, button, cursor, std::move(axesData));
 	}
