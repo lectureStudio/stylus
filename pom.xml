@@ -4,7 +4,7 @@
 
 	<groupId>org.lecturestudio.stylus</groupId>
 	<artifactId>stylus-parent</artifactId>
-	<version>0.2.0</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>stylus-parent</name>
