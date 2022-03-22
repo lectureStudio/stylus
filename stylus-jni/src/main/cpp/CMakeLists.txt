@@ -29,6 +29,9 @@ endif()
 add_subdirectory(dependencies/jni-voithos)
 add_subdirectory(dependencies/core)
 
+# Find the JNI package
+find_package(JNI)
+
 get_target_property(JNI_INCLUDES jni-voithos INCLUDE_DIRECTORIES)
 get_target_property(CORE_INCLUDES stylus-core INCLUDE_DIRECTORIES)
 
@@ -66,11 +69,11 @@ if(APPLE)
 	set(PLATFORM_LIB stylus-cocoa)
 elseif(LINUX)
 	target_link_directories(${PROJECT_NAME} PRIVATE dependencies/${STYLUS_OS}/lib/x86-64)
-	set(STYLUS_LINK_LIBS X11 Xi Xext jawt -static-libgcc -static-libstdc++)
+	set(STYLUS_LINK_LIBS X11 Xi Xext -static-libgcc -static-libstdc++)
 	set(PLATFORM_LIB stylus-x11)
 elseif(WIN32)
 	target_link_directories(${PROJECT_NAME} PRIVATE dependencies/${STYLUS_OS}/lib/x86-64)
-	set(STYLUS_LINK_LIBS jawt setupapi)
+	set(STYLUS_LINK_LIBS setupapi)
 	set(PLATFORM_LIB stylus-rts)
 endif()
 
@@ -79,7 +82,12 @@ set_property(
 	APPEND PROPERTY INCLUDE_DIRECTORIES ${JNI_INCLUDES} ${CORE_INCLUDES}
 )
 
-target_link_libraries(${PROJECT_NAME} ${PLATFORM_LIB} ${STYLUS_LINK_LIBS} jni-voithos stylus-core)
+target_link_libraries(${PROJECT_NAME} ${JNI_LIBRARIES} ${PLATFORM_LIB} ${STYLUS_LINK_LIBS} jni-voithos stylus-core)
+
+if (JNI_FOUND)
+	target_link_libraries(${PROJECT_NAME} ${JNI_LIBRARIES})
+	message("${JNI_LIBRARIES}")
+endif()
 
 install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime

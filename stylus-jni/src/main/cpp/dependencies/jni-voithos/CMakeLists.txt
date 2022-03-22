@@ -5,7 +5,6 @@ add_library(${PROJECT_NAME} STATIC)
 
 target_sources(${PROJECT_NAME}
 	INTERFACE
-		include/jni/jni.h
 		include/Exception.h
 		include/JavaArray.h
 		include/JavaArrayList.h
@@ -84,6 +83,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	include
-	include/jni
-	include/jni/${JNI_PLATFORM}
 )
+
+# Find the JNI package
+find_package(JNI)
+if (JNI_FOUND)
+    target_include_directories(${PROJECT_NAME} PUBLIC "${JNI_INCLUDE_DIRS}")
+endif()
