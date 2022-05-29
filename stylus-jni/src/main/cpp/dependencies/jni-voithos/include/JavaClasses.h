@@ -26,7 +26,6 @@ namespace jni
 			{
 				std::lock_guard<std::mutex> l(getMutex());
 
-				auto & map = getClassMap();
 				const std::type_index index = std::type_index(typeid(T));
 
 				auto found = map.find(index);
@@ -42,12 +41,6 @@ namespace jni
 			}
 
 		private:
-			static std::unordered_map<std::type_index, std::shared_ptr<JavaClass>> & getClassMap()
-			{
-				static std::unordered_map<std::type_index, std::shared_ptr<JavaClass>> map;
-				return map;
-			}
-
 			static std::mutex & getMutex()
 			{
 				static std::mutex mutex;
@@ -57,6 +50,8 @@ namespace jni
 		private:
 			JavaClasses() = default;
 			~JavaClasses() = default;
+
+			 static inline std::unordered_map<std::type_index, std::shared_ptr<jni::JavaClass>> map;
 	};
 }
 

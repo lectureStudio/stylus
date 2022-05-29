@@ -71,7 +71,7 @@ JNIEXPORT void JNICALL Java_org_lecturestudio_stylus_StylusManager_attachStylusL
 		manager->attachStylusListener(jni::JavaLocalRef<jobject>(env, window), stylusListener);
 
 		jlong ptr = GetHandleLong<StylusManager>(env, listener);
-        context->listeners[ptr] = stylusListener;
+		context->listeners[ptr] = stylusListener;
 	}
 	catch (StylusException & ex) {
 		env->Throw(jni::JavaRuntimeException(env, ex.what()));
