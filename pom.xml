@@ -263,6 +263,19 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>mac-aarch64</id>
+			<activation>
+				<os>
+					<family>mac</family>
+					<arch>aarch64</arch>
+				</os>
+			</activation>
+			<properties>
+				<platform.classifier>macos-aarch64</platform.classifier>
+				<platform.module>stylus.macos.aarch64</platform.module>
+			</properties>
+		</profile>
+		<profile>
 			<id>mac-x86_64</id>
 			<activation>
 				<os>

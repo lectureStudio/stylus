@@ -6,7 +6,7 @@ Java native interface implementation for pressure-sensitive input devices.
 <dependency>
     <groupId>org.lecturestudio.stylus</groupId>
     <artifactId>stylus</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
@@ -18,11 +18,11 @@ Swing                      |  JavaFX
 By default, the main artifact depends on the native library corresponding to the system you are running your build or application on.
 The native libraries can be loaded on the following platforms:
 
-| Operating System | Classifier          |
-| ---------------- |---------------------|
-| Linux            | linux-x86_64        |
-| macOS            | macos-x86_64        |
-| Windows          | windows-x86_64      |
+| Operating System | Classifier                  |
+| ---------------- |-----------------------------|
+| Linux            | linux-x86_64                |
+| macOS            | macos-x86_64, macos-aarch64 |
+| Windows          | windows-x86_64              |
 
 ### Build Notes
 

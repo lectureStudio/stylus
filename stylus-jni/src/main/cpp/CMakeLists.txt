@@ -65,7 +65,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 if(APPLE)
 	target_compile_options(${PROJECT_NAME} PRIVATE -x objective-c++)
-	set(STYLUS_LINK_LIBS -ObjC "-framework AppKit" "-framework Cocoa" "-framework IOKit" "-framework JavaVM" "-framework QuartzCore")
+	set(STYLUS_LINK_LIBS -ObjC "-framework AppKit" "-framework Cocoa" "-framework IOKit" "-framework JavaNativeFoundation" "-framework QuartzCore")
 	set(PLATFORM_LIB stylus-cocoa)
 elseif(LINUX)
 	target_link_directories(${PROJECT_NAME} PRIVATE dependencies/${STYLUS_OS}/lib/x86-64)
